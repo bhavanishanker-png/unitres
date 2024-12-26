@@ -14,7 +14,7 @@ const Permissions = () => {
 
       try {
         const response = await axios.get(
-          "http://localhost:5001/api/user/permissions",
+          "https://unitres.vercel.app/api/user/permissions",
           {
             headers: { "x-auth-token": token },
           }

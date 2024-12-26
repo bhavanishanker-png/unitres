@@ -13,7 +13,7 @@ const Dashboard = () => {
       if (!token) return navigate("/");
 
       try {
-        const response = await axios.get("http://localhost:5001/api/menu", {
+        const response = await axios.get("https://unitres.vercel.app/api/menu", {
           headers: { "x-auth-token": token },
         });
         setMenuItems(response.data);

@@ -23,7 +23,7 @@ const Login = () => {
     }
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5001/api/auth/login", {
+      const response = await axios.post("https://unitres.vercel.app/api/auth/login", {
         username,
         password,
       });
