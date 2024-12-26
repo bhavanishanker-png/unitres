@@ -7,19 +7,14 @@ require('dotenv').config();
 
 const app = express();
 const prisma = new PrismaClient();
-const PORT = process.env.PORT || 5001; // Use a different port
+const PORT = process.env.PORT || 5001;
 
 // Middleware
-// Configure CORS
 app.use(cors({
-  origin: '*', // Allow requests from this origin
+  origin: '*', // Allow all origins for simplicity
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  credentials: true, // If using cookies or authentication
+  credentials: true,
 }));
-
-// OR (Allow all origins, less secure)
-// app.use(cors());
-
 app.use(express.json());
 
 // JWT Secret
@@ -158,12 +153,17 @@ async function main() {
   console.log('Database synced and seeded.');
 }
 
-// Start Server
-main()
-  .then(() => {
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-  })
-  .catch((err) => {
-    console.error('Error starting server:', err);
-    process.exit(1);
-  });
+// Export the Express app for Vercel
+module.exports = app;
+
+// Run locally if not in Vercel environment
+if (require.main === module) {
+  main()
+    .then(() => {
+      app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+    })
+    .catch((err) => {
+      console.error('Error starting server:', err);
+      process.exit(1);
+    });
+}
