@@ -10,11 +10,13 @@ const prisma = new PrismaClient();
 const PORT = process.env.PORT || 5001;
 
 // Middleware
-app.use(cors({
-  origin: '*', // Allow all origins for simplicity
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: '*', // Allow all origins for simplicity
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // JWT Secret
@@ -30,12 +32,16 @@ const auth = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(401).json({ message: 'Token is not valid' });
+    res.status(401).json({ message: 'Invalid token' });
   }
 };
 
 // API Routes
-// Login
+
+/**
+ * User Login
+ * Validates username and password, generates a JWT token on success.
+ */
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -49,7 +55,7 @@ app.post('/api/auth/login', async (req, res) => {
       include: { role: true },
     });
 
-    if (!user) return res.status(400).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
@@ -70,7 +76,10 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Get Menu Items by Role
+/**
+ * Get Menu Items by Role
+ * Fetches menu items based on the role of the authenticated user.
+ */
 app.get('/api/menu', auth, async (req, res) => {
   try {
     const { roleId } = req.user;
@@ -79,6 +88,10 @@ app.get('/api/menu', auth, async (req, res) => {
       where: { roleId },
     });
 
+    if (!menus || menus.length === 0) {
+      return res.status(404).json({ message: 'No menu items found for this role' });
+    }
+
     res.json(menus);
   } catch (error) {
     console.error(error);
@@ -86,7 +99,10 @@ app.get('/api/menu', auth, async (req, res) => {
   }
 });
 
-// Get User Permissions
+/**
+ * Get User Permissions
+ * Fetches permissions based on the authenticated user's role.
+ */
 app.get('/api/user/permissions', auth, async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
@@ -97,9 +113,9 @@ app.get('/api/user/permissions', auth, async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     const permissions = {
-      canView: true,
-      canEdit: ['Admin', 'Manager'].includes(user.role.name),
-      canDelete: user.role.name === 'Admin',
+      canView: true, // All users can view
+      canEdit: ['Admin', 'Manager'].includes(user.role.name), // Admin and Manager can edit
+      canDelete: user.role.name === 'Admin', // Only Admin can delete
     };
 
     res.json(permissions);
@@ -109,3 +125,12 @@ app.get('/api/user/permissions', auth, async (req, res) => {
   }
 });
 
+// Default Route
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to the API' });
+});
+
+// Start Server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
