@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5001;
 // Middleware
 app.use(
   cors({
-    origin: '*', // Allow all origins for simplicity
+    origin: ["http://localhost:3000","https://unitres-onh8.vercel.app/"], // Allow all origins for simplicity
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     credentials: true,
   })
