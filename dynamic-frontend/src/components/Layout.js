@@ -12,6 +12,14 @@ const Layout = () => {
   useEffect(() => {
     dispatch(fetchMenuItems());
   }, [dispatch]);
+  useEffect(() => {
+    const uniqueItems = Array.from(new Set(items.map((item) => item.path))).map(
+      (path) => items.find((item) => item.path === path)
+    );
+    
+    console.log('Filtered Unique Menu Items:', uniqueItems);
+  }, [items]);
+  
 
   const handleLogout = () => {
     dispatch(logout());
@@ -24,9 +32,9 @@ const Layout = () => {
           <h2 className="text-xl font-semibold text-gray-800">Admin Panel</h2>
         </div>
         <nav className="mt-4">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <Link
-              key={item.path}
+              key={`${item.path}-${index}`} // Ensure unique key
               to={item.path}
               className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
             >
@@ -35,7 +43,7 @@ const Layout = () => {
           ))}
         </nav>
         <div className="absolute bottom-0 w-64 p-4">
-          <p className="text-sm text-gray-600">Logged in as: {user?.username}</p>
+          <p className="text-sm text-black-600">Logged in as: {user?.username}</p>
           <button
             onClick={handleLogout}
             className="mt-2 w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
@@ -52,4 +60,3 @@ const Layout = () => {
 };
 
 export default Layout;
-
