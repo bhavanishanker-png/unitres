@@ -149,7 +149,7 @@ const PORT = process.env.PORT || 5001;
 app.use(express.json());
 app.use(
   cors({
-    origin: ["https://unitres-onh8.vercel.app"], // Frontend URL
+    origin: ["https://unitres-onh8.vercel.app","http://localhost:3000"], // Frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   })

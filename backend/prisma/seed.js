@@ -9,7 +9,7 @@ async function main() {
   // Truncate tables
   await prisma.$executeRawUnsafe(`TRUNCATE TABLE User;`);
   await prisma.$executeRawUnsafe(`TRUNCATE TABLE Role;`);
-
+  // await prisma.$executeRawUnsafe(`TRUNCATE TABLE Managers;`);
   // Re-enable foreign key checks
   await prisma.$executeRawUnsafe(`SET FOREIGN_KEY_CHECKS = 1;`);
 
