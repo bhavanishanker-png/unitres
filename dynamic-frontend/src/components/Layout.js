@@ -20,6 +20,7 @@ const Layout = () => {
     );
     setUniqueItems(filteredItems);
   }, [items]);
+  console.log(items)
 
   const handleLogout = () => {
     dispatch(logout());
